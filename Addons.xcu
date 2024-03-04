@@ -1,0 +1,517 @@
+<oor:component-data xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" oor:name="Addons" oor:package="org.openoffice.Office">
+    <node oor:name="AddonUI">
+        <!--  We add our custom menus here -->
+
+		<!-- Barra de menu principal 
+		<node oor:name="OfficeMenuBar">
+			<node oor:name="org.jcsanz.EasyDB.EasyMariaDB" oor:op="replace">
+				<prop oor:name="Title" oor:type="xs:string">
+					<value xml:lang="en-US">EasyMariaDB</value>
+				</prop>
+				<prop oor:name="Target" oor:type="xs:string">
+					<value>_self</value>
+				</prop>
+
+				<node oor:name="Submenu">
+					<node oor:name="m1" oor:op="replace">
+						<prop oor:name="URL" oor:type="xs:string">
+							<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewDatabase</value>
+						</prop>
+						<prop oor:name="Title" oor:type="xs:string">
+							<value xml:lang="en-US">Nueva base de datos</value>
+						</prop>
+						<prop oor:name="Target" oor:type="xs:string">
+							<value>_self</value>
+						</prop>
+						<prop oor:name="Context" oor:type="xs:string">
+							<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+						</prop>				
+					</node>
+
+					<node oor:name="m2" oor:op="replace">
+						<prop oor:name="URL" oor:type="xs:string">
+							<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewUser</value>
+						</prop>
+						<prop oor:name="Title" oor:type="xs:string">
+							<value xml:lang="en-US">Nuevo usuario</value>
+						</prop>
+						<prop oor:name="Target" oor:type="xs:string">
+							<value>_self</value>
+						</prop>
+						<prop oor:name="Context" oor:type="xs:string">
+							<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+						</prop>
+					</node>
+						
+					<node oor:name="m3" oor:op="replace">
+						<prop oor:name="URL" oor:type="xs:string">
+							<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgPrivileges</value>
+						</prop>
+						<prop oor:name="Title" oor:type="xs:string">
+							<value xml:lang="en-US">Gestionar permisos de los usuarios</value>
+						</prop>
+						<prop oor:name="Target" oor:type="xs:string">
+							<value>_self</value>
+						</prop>
+						<prop oor:name="Context" oor:type="xs:string">
+							<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+						</prop>
+					</node>
+					
+				</node>			
+			</node>
+		</node>
+		 Fin Barra menu principal -->		
+
+		<!-- Barra de herramientas -->
+		<node oor:name="OfficeToolBar">
+			<node oor:name="org.jcsanz.EasyDB.EasyMariaDB.ToolBar" oor:op="replace">
+			
+				<node oor:name="btn01" oor:op="replace">
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.star.script.BasicIDE</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value xml:lang="en-US">New database</value>
+						<value xml:lang="es-ES">Nueva base de datos</value>
+					</prop>
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewDatabase</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+				</node>
+				
+				<node oor:name="btn02" oor:op="replace">
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.star.script.BasicIDE</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value xml:lang="en-US">New user</value>  
+						<value xml:lang="es-ES">Nuevo usuario</value>
+					</prop>
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewUser</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+				</node>
+				
+				<node oor:name="btn03" oor:op="replace">
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgDelUser</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value xml:lang="en-US">Delete user</value>
+						<value xml:lang="es-ES">Eliminar usuario</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+					</prop>
+				</node>
+				
+				<node oor:name="btn04" oor:op="replace">
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.star.script.BasicIDE</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value xml:lang="en-US">User permissions</value>  
+						<value xml:lang="es-ES">Permisos de usuario</value>
+					</prop>
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgPrivileges</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+				</node>
+				
+				<node oor:name="btn05" oor:op="replace">
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewPass</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value xml:lang="en-US">Change user password</value>
+						<value xml:lang="es-ES">Cambiar contraseña de usuario</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+					</prop>
+				</node>
+				
+				<node oor:name="btn06" oor:op="replace">
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgChangePass</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value xml:lang="en-US">Change own password</value>
+						<value xml:lang="es-ES">Cambiar contraseña propia</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.sdb.OfficeDatabaseDocument</value>
+					</prop>
+				</node>
+
+			</node>
+
+			
+		</node>		
+		<!-- Fin Barra de herramientas -->
+
+		<!-- Imágenes --> 
+		<node oor:name="Images">
+			<node oor:name="org.jcsanz.EasyDB.EasyMariaDB.OpenDlgNewDatabase" oor:op="replace">
+				<prop oor:name="URL" oor:type="xs:string">
+					<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewDatabase</value>
+				</prop>
+				<node oor:name="UserDefinedImages">
+					<prop oor:name="ImageSmallURL">
+						<value>%origin%/icons/database.svg</value>
+					</prop>
+					<prop oor:name="ImageBigURL">
+						<value>%origin%/icons/database.svg</value>
+					</prop>
+				</node>
+			</node>
+			
+			<node oor:name="org.jcsanz.EasyDB.EasyMariaDB.OpenDlgNewUser" oor:op="replace">
+				<prop oor:name="URL" oor:type="xs:string">
+					<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewUser</value>
+				</prop>
+				<node oor:name="UserDefinedImages">
+					<prop oor:name="ImageSmallURL">
+						<value>%origin%/icons/new-user.svg</value>
+					</prop>
+					<prop oor:name="ImageBigURL">
+						<value>%origin%/icons/new-user.svg</value>
+					</prop>
+				</node>
+			</node>
+			
+			<node oor:name="org.jcsanz.EasyDB.EasyMariaDB.OpenDlgDelUser" oor:op="replace">
+				<prop oor:name="URL" oor:type="xs:string">
+					<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgDelUser</value>
+				</prop>
+				<node oor:name="UserDefinedImages">
+					<prop oor:name="ImageSmallURL">
+						<value>%origin%/icons/del-user.svg</value>
+					</prop>
+					<prop oor:name="ImageBigURL">
+						<value>%origin%/icons/del-user.svg</value>
+					</prop>
+				</node>
+			</node>
+			
+			<node oor:name="org.jcsanz.EasyDB.EasyMariaDB.OpenDlgPrivileges" oor:op="replace">
+				<prop oor:name="URL" oor:type="xs:string">
+					<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgPrivileges</value>
+				</prop>
+				<node oor:name="UserDefinedImages">
+					<prop oor:name="ImageSmallURL">
+						<value>%origin%/icons/privileges.svg</value>
+					</prop>
+					<prop oor:name="ImageBigURL">
+						<value>%origin%/icons/privileges.svg</value>
+					</prop>
+				</node>
+			</node>	
+				
+			<node oor:name="org.jcsanz.EasyDB.EasyMariaDB.OpenDlgNewPass" oor:op="replace">
+				<prop oor:name="URL" oor:type="xs:string">
+					<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewPass</value>
+				</prop>
+				<node oor:name="UserDefinedImages">
+					<prop oor:name="ImageSmallURL">
+						<value>%origin%/icons/new-pass.svg</value>
+					</prop>
+					<prop oor:name="ImageBigURL">
+						<value>%origin%/icons/new-pass.svg</value>
+					</prop>
+				</node>
+			</node>
+			
+			<node oor:name="org.jcsanz.EasyDB.EasyMariaDB.OpenDlgChangePass" oor:op="replace">
+				<prop oor:name="URL" oor:type="xs:string">
+					<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgChangePass</value>
+				</prop>
+				<node oor:name="UserDefinedImages">
+					<prop oor:name="ImageSmallURL">
+						<value>%origin%/icons/user-pass.svg</value>
+					</prop>
+					<prop oor:name="ImageBigURL">
+						<value>%origin%/icons/user-pass.svg</value>
+					</prop>
+				</node>
+			</node>
+				
+		</node>
+		<!-- Fin Imágenes -->
+	
+		<!-- Menú Herramientas > Complementos 
+		<node oor:name="AddonMenu">
+			
+				<node oor:name="Addon.m1" oor:op="replace">
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewDatabase</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value xml:lang="en-US">Nueva base de datos</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+					</prop>				
+				</node>
+		</node>
+		Fin Menú Herramientas > Complementos -->
+
+		<!-- Menú Herramientas > EasyMariaDB -->	
+		<node oor:name="OfficeMenuBarMerging">
+			<node oor:name="org.jcsanz.EasyDB.EasyMariaDB.ToolMenu" oor:op="replace">
+				<node oor:name="S1" oor:op="replace">
+					<prop oor:name="MergePoint">
+						<value>.uno:ToolsMenu\.uno:MacrosMenu</value>
+					</prop>
+					<prop oor:name="MergeCommand">
+						<value>AddAfter</value>
+					</prop>
+					<prop oor:name="MergeFallback">
+						<value>AddPath</value>
+					</prop>
+					<prop oor:name="MergeContext" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+					</prop>
+					
+					<node oor:name="MenuItems">
+						<node oor:name="M0" oor:op="replace">
+							<prop oor:name="Title">
+								<value xml:lang="en-US">EasyMariaDB</value>
+								<value xml:lang="es-ES">EasyMariaDB</value>
+							</prop>
+							<node oor:name="Submenu">
+								<node oor:name="M1" oor:op="replace">
+									<prop oor:name="URL" oor:type="xs:string">
+										<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewDatabase</value>
+									</prop>
+									<prop oor:name="Title" oor:type="xs:string">
+										<value xml:lang="en-US">New database</value>
+										<value xml:lang="es-ES">Nueva base de datos</value>
+									</prop>
+									<prop oor:name="Target" oor:type="xs:string">
+										<value>_self</value>
+									</prop>
+									<prop oor:name="Context" oor:type="xs:string">
+										<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+									</prop>
+								</node>
+								
+								<node oor:name="M2" oor:op="replace">
+									<prop oor:name="URL" oor:type="xs:string">
+										<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewUser</value>
+									</prop>
+									<prop oor:name="Title" oor:type="xs:string">
+										<value xml:lang="en-US">New user</value>
+										<value xml:lang="es-ES">Nuevo usuario</value>
+									</prop>
+									<prop oor:name="Target" oor:type="xs:string">
+										<value>_self</value>
+									</prop>
+									<prop oor:name="Context" oor:type="xs:string">
+										<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+									</prop>
+								</node>
+								
+								<node oor:name="M3" oor:op="replace">
+									<prop oor:name="URL" oor:type="xs:string">
+										<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgDelUser</value>
+									</prop>
+									<prop oor:name="Title" oor:type="xs:string">
+										<value xml:lang="en-US">Delete user</value>
+										<value xml:lang="es-ES">Eliminar usuario</value>
+									</prop>
+									<prop oor:name="Target" oor:type="xs:string">
+										<value>_self</value>
+									</prop>
+									<prop oor:name="Context" oor:type="xs:string">
+										<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+									</prop>
+								</node>
+									
+								<node oor:name="M4" oor:op="replace">
+									<prop oor:name="URL" oor:type="xs:string">
+										<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgPrivileges</value>
+									</prop>
+									<prop oor:name="Title" oor:type="xs:string">
+										<value xml:lang="en-US">User permissions</value>
+										<value xml:lang="es-ES">Permisos de usuario</value>
+									</prop>
+									<prop oor:name="Target" oor:type="xs:string">
+										<value>_self</value>
+									</prop>
+									<prop oor:name="Context" oor:type="xs:string">
+										<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+									</prop>
+								</node>
+								
+								<node oor:name="M5" oor:op="replace">
+									<prop oor:name="URL" oor:type="xs:string">
+										<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewPass</value>
+									</prop>
+									<prop oor:name="Title" oor:type="xs:string">
+										<value xml:lang="en-US">Change user password</value>
+										<value xml:lang="es-ES">Cambiar contraseña a un usuario</value>
+									</prop>
+									<prop oor:name="Target" oor:type="xs:string">
+										<value>_self</value>
+									</prop>
+									<prop oor:name="Context" oor:type="xs:string">
+										<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+									</prop>
+								</node>
+								
+								<node oor:name="M6" oor:op="replace">
+									<prop oor:name="URL" oor:type="xs:string">
+										<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgChangePass</value>
+									</prop>
+									<prop oor:name="Title" oor:type="xs:string">
+										<value xml:lang="en-US">Change own password</value>
+										<value xml:lang="es-ES">Cambiar contraseña propia</value>
+									</prop>
+									<prop oor:name="Target" oor:type="xs:string">
+										<value>_self</value>
+									</prop>
+									<prop oor:name="Context" oor:type="xs:string">
+										<value>com.sun.star.sdb.OfficeDatabaseDocument</value>
+									</prop>
+								</node>
+								
+							</node>
+						</node>
+					</node>
+					
+					
+				</node>
+			</node>
+		</node>
+		<!-- Fin Menú Herramientas > Complementos -->
+	
+		<!-- Inicio Omnibarra -->
+		<node oor:name="OfficeNotebookBar">
+			<node oor:name="org.jcsanz.EasyDB.EasyMariaDB.OfficeOmniBar" oor:op="replace">
+
+				<node oor:name="om1" oor:op="replace">
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewDatabase</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value xml:lang="en-US">New database</value>
+						<value xml:lang="es-ES">Nueva base de datos</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+					</prop>
+				</node>
+				
+				<node oor:name="om2" oor:op="replace">
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewUser</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value xml:lang="en-US">New user</value>
+						<value xml:lang="es-ES">Nuevo usuario</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+					</prop>
+				</node>
+				
+				<node oor:name="om3" oor:op="replace">
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgDelUser</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value xml:lang="en-US">Delete user</value>
+						<value xml:lang="es-ES">Eliminar usuario</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+					</prop>
+				</node>
+					
+				<node oor:name="om4" oor:op="replace">
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgPrivileges</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value xml:lang="en-US">User permissions</value>
+						<value xml:lang="es-ES">Permisos de usuario</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+					</prop>
+				</node>
+				
+				<node oor:name="om5" oor:op="replace">
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgNewPass</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value xml:lang="en-US">Change user password</value>
+						<value xml:lang="es-ES">Cambiar contraseña a un usuario</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.script.BasicIDE,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.start.comp.math.FormulaDocument</value>
+					</prop>
+				</node>
+				
+				<!-- Comento esta línea porque aparece en todos los tipos de documentos y no me interesa
+				<node oor:name="om6" oor:op="replace">
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///EasyMariaDB.EasyMariaDB.OpenDlgChangePass</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string">
+						<value xml:lang="en-US">Cambiar contraseña propia</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.sdb.OfficeDatabaseDocument</value>
+					</prop>
+				</node>
+				-->
+
+			</node>
+		</node>
+		<!-- Fin Omnibarra -->
+
+	</node>
+</oor:component-data>

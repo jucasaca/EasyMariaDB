@@ -1,0 +1,1131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="EasyMariaDB" script:language="StarBasic" script:moduleType="normal">REM  *****  BASIC  *****
+Option Explicit
+&apos;Privileges in selectable listboxes should be in the same order
+Const PRIVILEGES_NONE = 0
+Const PRIVILEGES_READ = 1
+Const PRIVILEGES_WRITE = 2
+Const PRIVILEGES_ADVANCED = 3
+Const PRIVILEGES_ADMIN = 4
+
+
+&apos;******************************************************
+&apos; Main
+&apos;******************************************************
+Sub Main
+	OpenDlgPrivileges
+End Sub
+
+Sub Pruebas
+	Dim oDialog As Object
+	DIM oDatasource AS Object
+	DIM oConnection AS Object
+	oDatasource = thisComponent.dataSource
+	&apos;oConnection = oDatasource.getConnection(&quot;&quot;,&quot;&quot;)
+	oDialog = LoadDlg(&quot;DlgChangePass&quot;)
+	oDialog.GetControl(&quot;txtUser&quot;).Text = oDatasource.User
+	oDialog.Execute()
+End Sub
+
+&apos;******************************************************
+&apos; InitLoc
+&apos;******************************************************
+Function InitLoc() As Variant
+	Static extensionFolder As String
+	GlobalScope.BasicLibraries.loadLibrary(&quot;ScriptForge&quot;)
+
+	Dim platform As Variant
+	Dim FSO As Object
+	
+	If extensionFolder = &quot;&quot; Then
+		Set FSO = CreateScriptService(&quot;FileSystem&quot;)	
+		extensionFolder = FSO.ExtensionFolder(&quot;org.jcsanz.EasyDB.EasyMariaDB&quot;) &amp; &quot;/lang&quot;
+	endif	
+	
+	Set platform = CreateScriptService(&quot;Platform&quot;)	
+	initLoc = CreateScriptService(&quot;L10N&quot;,extensionFolder, platform.OfficeLocale, &quot;UTF8&quot;, &quot;en-US&quot;, &quot;UTF8&quot;)
+End Function
+
+
+&apos;******************************************************
+&apos; openDlgNewDatabase
+&apos;******************************************************
+Sub OpenDlgNewDatabase
+	Dim oDlg As Object
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
+	oDlg = CreateScriptService(&quot;Dialog&quot;, &quot;GlobalScope&quot;, &quot;EasyMariaDB&quot;, &quot;DlgNewDatabase&quot;)
+	oDlg.GetTextsFromL10N(InitLoc())
+	oDlg.Execute()
+End Sub
+
+&apos;******************************************************
+&apos; openDlgNewUser
+&apos;******************************************************
+Sub OpenDlgNewUser
+	Dim oDlg As Object
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
+	oDlg = CreateScriptService(&quot;Dialog&quot;, &quot;GlobalScope&quot;, &quot;EasyMariaDB&quot;, &quot;DlgNewUser&quot;)
+	oDlg.GetTextsFromL10N(InitLoc())
+  	oDlg.execute()
+End Sub
+
+&apos;******************************************************
+&apos; OpenDlgNewPass
+&apos;******************************************************
+Sub OpenDlgNewPass
+	Dim oDlg As Object
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
+	oDlg = CreateScriptService(&quot;Dialog&quot;, &quot;GlobalScope&quot;, &quot;EasyMariaDB&quot;, &quot;DlgNewPass&quot;)
+	oDlg.GetTextsFromL10N(InitLoc())
+  	oDlg.execute()
+End Sub
+
+&apos;******************************************************
+&apos; OpenDlgChangePass
+&apos;******************************************************
+Sub OpenDlgChangePass
+	Dim oDatasource As Object 
+	Dim control
+	Dim oDlg As Object
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
+	oDlg = CreateScriptService(&quot;Dialog&quot;, &quot;GlobalScope&quot;, &quot;EasyMariaDB&quot;, &quot;DlgChangePass&quot;)
+	oDlg.GetTextsFromL10N(InitLoc())	
+	oDatasource = thisComponent.dataSource
+	oDlg.Controls(&quot;frmUser&quot;).Caption = &quot;User: &quot; &amp; oDatasource.User
+  	oDlg.execute()
+End Sub
+
+&apos;******************************************************
+&apos; openDlgPrivileges
+&apos;******************************************************
+Sub OpenDlgPrivileges
+	Dim oDlg As Object
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
+	oDlg = CreateScriptService(&quot;Dialog&quot;, &quot;GlobalScope&quot;, &quot;EasyMariaDB&quot;, &quot;DlgPrivileges&quot;)
+	oDlg.GetTextsFromL10N(InitLoc())
+  	oDlg.execute()
+End Sub
+
+&apos;******************************************************
+&apos; OpenDlgDelUser
+&apos;******************************************************
+Sub OpenDlgDelUser
+	Dim oDlg As Object
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;ScriptForge&quot;)
+	oDlg = CreateScriptService(&quot;Dialog&quot;, &quot;GlobalScope&quot;, &quot;EasyMariaDB&quot;, &quot;DlgDelUser&quot;)
+	oDlg.GetTextsFromL10N(InitLoc())
+  	oDlg.execute()	
+End Sub
+
+&apos;******************************************************
+&apos; DtbNext_actionPerformed
+&apos;******************************************************
+Sub DtbNext_actionPerformed(oEvent)
+	Const NUM_STEPS = 2
+	Dim oCtrl  As Object
+	Dim oDialog As Object
+	Dim oCon As Object
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object	
+	If ValidateConnect(oDialog) Then
+       	If oDialog.Model.Step &lt; NUM_STEPS Then oDialog.Model.Step = oDialog.Model.Step + 1
+	EndIf 
+	&apos;Activation/desactivation of buttons
+	With  oDialog &apos;With the dialog
+		&apos;Activate/desactivate previous
+		.GetControl(&quot;btnPrevious&quot;).Enable = Not (.Model.Step = 1) 
+		&apos;Activate desactivate next
+		.GetControl(&quot;btnNext&quot;).Enable = not (.Model.Step = NUM_STEPS)
+		&apos;Activate desactivate Ok
+		.GetControl(&quot;btnOk&quot;).Enable = (.Model.Step = NUM_STEPS)	 
+	End With 	
+End Sub
+
+&apos;******************************************************
+&apos; DtbPrevious_actionPerformed
+&apos;******************************************************
+Sub DtbPrevious_actionPerformed(oEvent)
+	Const NUM_STEPS = 2
+	Dim oDialog As Object	
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object
+	if  oDialog.Model.Step &gt; 1 Then oDialog.Model.Step = oDialog.Model.Step - 1 &apos;backward one step
+	&apos;Activation/desactivation of buttons
+	With  oDialog &apos;With the dialog
+		&apos;Activate/desactivate previous
+		.GetControl(&quot;btnPrevious&quot;).Enable = Not (.Model.Step = 1) 
+		&apos;Activate desactivate next
+		.GetControl(&quot;btnNext&quot;).Enable = Not (.Model.Step = NUM_STEPS)
+		&apos;Activate desactivate Ok
+		.GetControl(&quot;btnOk&quot;).Enable = (.Model.Step = NUM_STEPS)	 
+	End With 	
+End Sub
+
+
+&apos;******************************************************
+&apos; DtbOk_actionPerformed
+&apos;******************************************************
+Sub DtbOk_actionPerformed(oEvent)
+	Dim oDialog As Object
+	Dim oCon As Object
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object
+	if not ValidateNewDatabase(oDialog) Then Exit Sub 
+	if not DlgNewDatabaseOk(oDialog) Then Exit Sub
+	oDialog.endExecute()		
+End Sub
+
+&apos;******************************************************
+&apos; UsrNext_actionPerformed
+&apos;******************************************************
+Sub UsrNext_actionPerformed(oEvent)
+	Const NUM_STEPS = 2
+	Dim oCtrl  As Object
+	Dim oDialog As Object
+	Dim oCon As Object
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object	
+	If ValidateConnect(oDialog) Then
+		&apos;Connect
+		oCon = ConnectWithDialog(oDialog)
+		If Not IsNull(oCon) Then
+			FillNewUserStep2(oDialog, oCon)		
+	   		&apos;Change Step
+        	If oDialog.Model.Step &lt; NUM_STEPS Then oDialog.Model.Step = oDialog.Model.Step + 1
+        EndIf
+	EndIf 
+	&apos;Activation/desactivation of buttons
+	With  oDialog &apos;With the dialog
+		&apos;Activate/desactivate previous
+		.GetControl(&quot;btnPrevious&quot;).Enable = Not (.Model.Step = 1) 
+		&apos;Activate desactivate next
+		.GetControl(&quot;btnNext&quot;).Enable = not (.Model.Step = NUM_STEPS)
+		&apos;Activate desactivate Ok
+		.GetControl(&quot;btnOk&quot;).Enable = (.Model.Step = NUM_STEPS)	 
+	End With 	
+End Sub
+
+&apos;******************************************************
+&apos; Usr_Previous_actionPerformed
+&apos;******************************************************
+Sub UsrPrevious_actionPerformed(oEvent)
+	Const NUM_STEPS = 2
+	Dim oDialog As Object	
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object
+	if  oDialog.Model.Step &gt; 1 Then oDialog.Model.Step = oDialog.Model.Step - 1 &apos;backward one step
+	&apos;Activation/desactivation of buttons
+	With  oDialog &apos;With the dialog
+		&apos;Activate/desactivate previous
+		.GetControl(&quot;btnPrevious&quot;).Enable = Not (.Model.Step = 1) 
+		&apos;Activate desactivate next
+		.GetControl(&quot;btnNext&quot;).Enable = Not (.Model.Step = NUM_STEPS)
+		&apos;Activate desactivate Ok
+		.GetControl(&quot;btnOk&quot;).Enable = (.Model.Step = NUM_STEPS)	 
+	End With 	
+End Sub
+
+&apos;******************************************************
+&apos; usrOk_actionPerformed
+&apos;******************************************************
+Sub UsrOk_actionPerformed(oEvent)
+	Dim oDialog As Object
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object
+	if not ValidateNewUser(oDialog) Then Exit Sub 
+	if not DlgNewUserOk(oDialog) Then Exit Sub 
+	oDialog.endExecute()		
+End Sub
+
+&apos;******************************************************
+&apos; PssNext_actionPerformed
+&apos;******************************************************
+Sub PssNext_actionPerformed(oEvent)
+	Const NUM_STEPS = 2
+	Dim oCtrl  As Object
+	Dim oDialog As Object
+	Dim oCon As Object
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object	
+	If ValidateConnect(oDialog) Then
+		&apos;Connect
+		oCon = ConnectWithDialog(oDialog)
+		If Not IsNull(oCon) Then
+			FillNewPassStep2(oDialog, oCon)		
+	   		&apos;Change Step
+        	If oDialog.Model.Step &lt; NUM_STEPS Then oDialog.Model.Step = oDialog.Model.Step + 1
+        EndIf
+	EndIf 
+	&apos;Activation/desactivation of buttons
+	With  oDialog &apos;With the dialog
+		&apos;Activate/desactivate previous
+		.GetControl(&quot;btnPrevious&quot;).Enable = Not (.Model.Step = 1) 
+		&apos;Activate desactivate next
+		.GetControl(&quot;btnNext&quot;).Enable = not (.Model.Step = NUM_STEPS)
+		&apos;Activate desactivate Ok
+		.GetControl(&quot;btnOk&quot;).Enable = (.Model.Step = NUM_STEPS)	 
+	End With 	
+End Sub
+
+&apos;******************************************************
+&apos; PssPrevious_actionPerformed
+&apos;******************************************************
+Sub PssPrevious_actionPerformed(oEvent)
+	Const NUM_STEPS = 2
+	Dim oDialog As Object	
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object
+	if  oDialog.Model.Step &gt; 1 Then oDialog.Model.Step = oDialog.Model.Step - 1 &apos;backward one step
+	&apos;Activation/desactivation of buttons
+	With  oDialog &apos;With the dialog
+		&apos;Activate/desactivate previous
+		.GetControl(&quot;btnPrevious&quot;).Enable = Not (.Model.Step = 1) 
+		&apos;Activate desactivate next
+		.GetControl(&quot;btnNext&quot;).Enable = Not (.Model.Step = NUM_STEPS)
+		&apos;Activate desactivate Ok
+		.GetControl(&quot;btnOk&quot;).Enable = (.Model.Step = NUM_STEPS)	 
+	End With 	
+End Sub
+
+&apos;******************************************************
+&apos; PssOk_actionPerformed
+&apos;******************************************************
+Sub PssOk_actionPerformed(oEvent)
+	Dim oDialog As Object
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object
+	if not ValidateNewPass(oDialog) Then Exit Sub 
+	if not DlgNewPassOk(oDialog) Then Exit Sub 
+	oDialog.endExecute()		
+End Sub
+
+&apos;******************************************************
+&apos; ChpOk_actionPerformed
+&apos;******************************************************
+Sub ChpOk_actionPerformed(oEvent)
+	Dim oDialog As Object
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object
+	if not ValidateChangePass(oDialog) Then Exit Sub 
+	if not DlgChangePassOk(oDialog) Then Exit Sub 
+	oDialog.endExecute()		
+End Sub
+
+&apos;******************************************************
+&apos; PrvNext_actionPerformed
+&apos;******************************************************
+Sub PrvNext_actionPerformed(oEvent)
+	Const NUM_STEPS = 2
+	Dim oCtrl  As Object
+	Dim oDialog As Object
+	Dim oCon As Object
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object	
+	If ValidateConnect(oDialog) Then
+		&apos;Connect
+		oCon = ConnectWithDialog(oDialog)
+		If Not IsNull(oCon) Then
+			FillPrivilegesStep2(oDialog, oCon)		
+	   		&apos;Change Step
+        	If oDialog.Model.Step &lt; NUM_STEPS Then oDialog.Model.Step = oDialog.Model.Step + 1
+        EndIf
+	EndIf 
+	&apos;Activation/desactivation of buttons
+	With  oDialog &apos;With the dialog
+		&apos;Activate/desactivate previous
+		.GetControl(&quot;btnPrevious&quot;).Enable = Not (.Model.Step = 1) 
+		&apos;Activate desactivate next
+		.GetControl(&quot;btnNext&quot;).Enable = not (.Model.Step = NUM_STEPS)
+		&apos;Activate desactivate Ok
+		.GetControl(&quot;btnOk&quot;).Enable = (.Model.Step = NUM_STEPS)
+		.GetControl(&quot;btnOk&quot;).SetFocus
+	End With 	
+End Sub
+
+&apos;******************************************************
+&apos; PrvPrevious_actionPerformed
+&apos;******************************************************
+Sub PrvPrevious_actionPerformed(oEvent)
+	Const NUM_STEPS = 2
+	Dim oDialog As Object	
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object
+	if  oDialog.Model.Step &gt; 1 Then oDialog.Model.Step = oDialog.Model.Step - 1 &apos;backward one step
+	&apos;Activation/desactivation of buttons
+	With  oDialog &apos;With the dialog
+		&apos;Activate/desactivate previous
+		.GetControl(&quot;btnPrevious&quot;).Enable = Not (.Model.Step = 1) 
+		&apos;Activate desactivate next
+		.GetControl(&quot;btnNext&quot;).Enable = Not (.Model.Step = NUM_STEPS)
+		&apos;Activate desactivate Ok
+		.GetControl(&quot;btnOk&quot;).Enable = (.Model.Step = NUM_STEPS)	 
+	End With 
+End Sub
+
+&apos;******************************************************
+&apos; PrvOk_actionPerformed
+&apos;******************************************************
+Sub PrvOk_actionPerformed(oEvent)
+	Dim oDialog As Object
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object
+	if not ValidatePrivileges(oDialog) Then Exit Sub 
+	if not DlgPrivilegesOk(oDialog) Then Exit Sub 
+	oDialog.endExecute()
+End Sub
+
+&apos;******************************************************
+&apos; DelUsrNext_actionPerformed
+&apos;******************************************************
+Sub DelUsrNext_actionPerformed(oEvent)
+	Const NUM_STEPS = 2
+	Dim oCtrl  As Object
+	Dim oDialog As Object
+	Dim oCon As Object
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object	
+	If ValidateConnect(oDialog) Then
+		&apos;Connect
+		oCon = ConnectWithDialog(oDialog)
+		If Not IsNull(oCon) Then
+			FillDelUsrStep2(oDialog, oCon)		
+	   		&apos;Change Step
+        	If oDialog.Model.Step &lt; NUM_STEPS Then oDialog.Model.Step = oDialog.Model.Step + 1
+        EndIf
+	EndIf 
+	&apos;Activation/desactivation of buttons
+	With  oDialog &apos;With the dialog
+		&apos;Activate/desactivate previous
+		.GetControl(&quot;btnPrevious&quot;).Enable = Not (.Model.Step = 1) 
+		&apos;Activate desactivate next
+		.GetControl(&quot;btnNext&quot;).Enable = not (.Model.Step = NUM_STEPS)
+		&apos;Activate desactivate Ok
+		.GetControl(&quot;btnOk&quot;).Enable = (.Model.Step = NUM_STEPS)
+		.GetControl(&quot;btnOk&quot;).SetFocus
+	End With 
+End Sub
+
+&apos;******************************************************
+&apos; DelUsrPrevious_actionPerformed
+&apos;******************************************************
+Sub DelUsrPrevious_actionPerformed(oEvent)
+	Const NUM_STEPS = 2
+	Dim oDialog As Object	
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object
+	if  oDialog.Model.Step &gt; 1 Then oDialog.Model.Step = oDialog.Model.Step - 1 &apos;backward one step
+	&apos;Activation/desactivation of buttons
+	With  oDialog &apos;With the dialog
+		&apos;Activate/desactivate previous
+		.GetControl(&quot;btnPrevious&quot;).Enable = Not (.Model.Step = 1) 
+		&apos;Activate desactivate next
+		.GetControl(&quot;btnNext&quot;).Enable = Not (.Model.Step = NUM_STEPS)
+		&apos;Activate desactivate Ok
+		.GetControl(&quot;btnOk&quot;).Enable = (.Model.Step = NUM_STEPS)	 
+	End With 
+End Sub
+
+&apos;******************************************************
+&apos; PrvOk_actionPerformed
+&apos;******************************************************
+Sub DelUsrOk_actionPerformed(oEvent)
+	Dim oDialog As Object
+	oDialog =  oEvent.Source.Context &apos;Getting the Dialog object
+	if not ValidateDelUsr(oDialog) Then Exit Sub 
+	if not DlgDelUsrOk(oDialog) Then Exit Sub 
+	oDialog.endExecute()
+End Sub
+
+&apos;******************************************************
+&apos; ValidateConect
+&apos;******************************************************
+Function ValidateConnect(oDialog) As Boolean
+	Dim bValid As Boolean
+	Dim iCancel As Integer 
+	bValid = (oDialog.GetControl(&quot;txtServer&quot;).Text &lt;&gt; &quot;&quot;) And _
+		(oDialog.GetControl(&quot;numPort&quot;).Text &lt;&gt; &quot;&quot;) And _
+		(oDialog.GetControl(&quot;txtAdminUser&quot;).Text &lt;&gt; &quot;&quot;) And _
+		(oDialog.GetControl(&quot;txtAdminPass&quot;).Text &lt;&gt; &quot;&quot;)
+	If Not bValid Then MsgBox(InitLoc().GetText(&quot;You must fill in all the data&quot;), MB_OK + MB_ICONEXCLAMATION, InitLoc().GetText(&quot;Error&quot;))&apos;Some field is not filled
+	ValidateConnect = bValid
+End Function
+
+
+&apos;******************************************************
+&apos; ValidateDelUsr
+&apos;******************************************************
+Function ValidateDelUsr(oDialog) As Boolean
+	Dim bValid As Boolean
+	Dim iCancel As Integer 
+
+	&apos;each field has to be filled
+	bValid = (oDialog.GetControl(&quot;lstUser&quot;).SelectedItem() &lt;&gt; &quot;&quot;) 
+	If Not bValid Then MsgBox(InitLoc().GetText(&quot;You must fill in all the data&quot;), MB_OK + MB_ICONEXCLAMATION, InitLoc().GetText(&quot;Error&quot;))&apos;Some field is not filled
+	ValidateDelUsr = bValid
+End Function
+
+&apos;******************************************************
+&apos; ValidateNewDatabase
+&apos;******************************************************
+Function ValidateNewDatabase(oDialog) As Boolean
+	Dim bValid As Boolean
+	&apos;each field has to be filled
+	bValid = (oDialog.GetControl(&quot;txtDatabase&quot;).Text &lt;&gt; &quot;&quot;)
+	If Not bValid Then MsgBox(InitLoc().GetText(&quot;You must fill in all the data&quot;), MB_OK + MB_ICONEXCLAMATION, InitLoc().GetText(&quot;Error&quot;))&apos;Some field is not filled
+	ValidateNewDatabase = bValid
+End Function
+
+&apos;******************************************************
+&apos; ValidateNewUser
+&apos;******************************************************
+Function ValidateNewUser(oDialog) As Boolean
+	Dim bValid As Boolean 
+	&apos;each field has to be filled
+	bValid = (oDialog.GetControl(&quot;txtUser&quot;).Text &lt;&gt; &quot;&quot;) And _
+		(oDialog.GetControl(&quot;txtPass&quot;).Text &lt;&gt; &quot;&quot;) And _
+		(oDialog.GetControl(&quot;lstDatabase&quot;).SelectedItem() &lt;&gt; &quot;&quot; Or oDialog.GetControl(&quot;lstPrivileges&quot;).SelectedItempOS() = PRIVILEGES_ADMIN) And _
+		(oDialog.GetControl(&quot;lstPrivileges&quot;).SelectedItem() &lt;&gt; &quot;&quot;)			 
+	If Not bValid Then MsgBox(InitLoc().GetText(&quot;You must fill in all the data&quot;), MB_OK + MB_ICONEXCLAMATION, InitLoc().GetText(&quot;Error&quot;))&apos;Some field is not filled
+	ValidateNewUser = bValid
+End Function
+
+&apos;******************************************************
+&apos; ValidateNewPass
+&apos;******************************************************
+Function ValidateNewPass(oDialog) As Boolean
+	Dim bValid As Boolean 
+	&apos;each field has to be filled
+	bValid = (oDialog.GetControl(&quot;lstUser&quot;).SelectedItem() &lt;&gt; &quot;&quot;) And _
+		(oDialog.GetControl(&quot;txtPass&quot;).Text &lt;&gt; &quot;&quot;) And _
+		(oDialog.GetControl(&quot;txtRepeatPass&quot;).Text &lt;&gt; &quot;&quot;)
+	If Not bValid Then 
+		MsgBox(InitLoc().GetText(&quot;You must fill in all the data&quot;), MB_OK + MB_ICONEXCLAMATION, InitLoc().GetText(&quot;Error&quot;))&apos;Some field is not filled
+	ElseIf (oDialog.GetControl(&quot;txtPass&quot;).Text &lt;&gt; oDialog.GetControl(&quot;txtRepeatPass&quot;).Text) Then 
+		MsgBox(InitLoc().GetText(&quot;Passwords do not match&quot;), MB_OK + MB_ICONEXCLAMATION, MsgBox(InitLoc().GetText(&quot;Error&quot;))
+		bValid = false
+	EndIf 
+	ValidateNewPass = bValid
+End Function
+
+&apos;******************************************************
+&apos; ValidateChangePass
+&apos;******************************************************
+Function ValidateChangePass(oDialog) As Boolean
+	Dim bValid As Boolean 
+	&apos;each field has to be filled
+	bValid = (oDialog.GetControl(&quot;txtPass&quot;).Text &lt;&gt; &quot;&quot;) And _
+		(oDialog.GetControl(&quot;txtNewPass&quot;).Text &lt;&gt; &quot;&quot;) And _
+		(oDialog.GetControl(&quot;txtRepeatPass&quot;).Text &lt;&gt; &quot;&quot;)
+	If Not bValid Then 
+		MsgBox(InitLoc().GetText(&quot;You must fill in all the data&quot;), MB_OK + MB_ICONEXCLAMATION, MsgBox(InitLoc().GetText(&quot;Error&quot;))
+	ElseIf (thisComponent.dataSource.Password &lt;&gt; oDialog.GetControl(&quot;txtPass&quot;).Text) Then
+		MsgBox(InitLoc().GetText(&quot;You must fill in all the data&quot;), MB_OK + MB_ICONEXCLAMATION, InitLoc().GetText(&quot;Error&quot;))&apos;Some field is not filled
+		bValid = false
+	ElseIf (oDialog.GetControl(&quot;txtNewPass&quot;).Text &lt;&gt; oDialog.GetControl(&quot;txtRepeatPass&quot;).Text) then
+		MsgBox(InitLoc().GetText(&quot;Passwords do not match&quot;), MB_OK + MB_ICONEXCLAMATION, MsgBox(InitLoc().GetText(&quot;Error&quot;))
+		bValid = false
+	EndIf 
+	ValidateChangePass = bValid
+End Function
+
+&apos;******************************************************
+&apos; ValidatePrivileges
+&apos;******************************************************
+Function ValidatePrivileges(oDialog) As Boolean
+	Dim bValid As Boolean
+	&apos;each field has to be filled
+	bValid = (oDialog.GetControl(&quot;lstUser&quot;).SelectedItem() &lt;&gt; &quot;&quot;) And _
+		(oDialog.GetControl(&quot;lstDatabase&quot;).SelectedItem() &lt;&gt; &quot;&quot;) And _
+		(oDialog.GetControl(&quot;lstPrivileges&quot;).SelectedItem() &lt;&gt; &quot;&quot;)			 
+	If Not bValid Then MsgBox(InitLoc().GetText(&quot;You must fill in all the data&quot;), MB_OK + MB_ICONEXCLAMATION, InitLoc().GetText(&quot;Error&quot;))&apos;Some field is not filled
+	ValidatePrivileges = bValid
+End Function
+
+&apos;******************************************************
+&apos; FillNewUserStep2
+&apos;******************************************************
+Sub FillNewUserStep2(oDialog, oCon)
+  	Dim oStatement As Object
+  	Dim sSQL As String
+ 	Dim oResult As Object
+  	Dim oControl As Object
+  	&apos;error catching
+  	On Local Error Goto ErrorHandler
+  	oStatement = oCon.CreateStatement()
+  	&apos;get databases
+  	sSQL = &quot;SHOW DATABASES&quot;
+  	oResult = oStatement.executeQuery(sSql)
+  	&apos;Get the list
+  	oControl = oDialog.getControl(&quot;lstDatabase&quot;)
+  	&apos;Clean the list
+	oControl.removeItems(0, oControl.getItemCount())
+	&apos;Fill the list
+  	Do While oResult.next()
+    	If Not (oResult.GetString(1)=&quot;mysql&quot; Or oResult.GetString(1)=&quot;information_schema&quot; Or oResult.GetString(1)=&quot;performance_schema&quot;) Then
+    		oControl.AddItem(oResult.getString (1),0)
+    	EndIf 
+  	Loop
+  	Exit Sub
+  	ErrorHandler:
+    	&apos;if error, error msg
+  		MsgBox Error$, MB_OK +  MB_ICONSTOP, &quot;Error&quot;
+End Sub
+
+&apos;******************************************************
+&apos; FillNewPassStep2
+&apos;******************************************************
+Sub FillNewPassStep2(oDialog, oCon)
+  	Dim oStatement As Object
+  	Dim sSQL As String
+ 	Dim oResult As Object
+  	Dim oControl As Object
+  	&apos;error catching
+  	On Local Error Goto ErrorHandler
+  	oStatement = oCon.CreateStatement()	
+ 	&apos;get users
+  	sSQL = &quot;SELECT DISTINCT USER FROM mysql.user&quot;
+  	oResult = oStatement.executeQuery(sSql)
+  	&apos;Get the list
+  	oControl = oDialog.getControl(&quot;lstUser&quot;)
+  	&apos;Clean the list
+	oControl.removeItems(0, oControl.getItemCount())
+	&apos;Fill the list
+  	Do While oResult.next()
+    	If Not (oResult.GetString(1) = &quot;root&quot; Or oResult.GetString(1)=&quot;mariadb.sys&quot;) Then
+    		oControl.AddItem(oResult.getString (1),0)
+    	EndIf 
+  	Loop
+
+  	Exit Sub
+  	ErrorHandler:
+    	&apos;if error, error msg
+  		MsgBox Error$, MB_OK +  MB_ICONSTOP, &quot;Error&quot;
+End Sub
+
+&apos;******************************************************
+&apos; FillPrivilegesStep2
+&apos;******************************************************
+Sub FillPrivilegesStep2(oDialog, oCon)
+  	Dim oStatement As Object
+  	Dim sSQL As String
+ 	Dim oResult As Object
+  	Dim oControl As Object
+  	&apos;error catching
+  	On Local Error Goto ErrorHandler
+  	oStatement = oCon.CreateStatement()	
+ 	&apos;get users
+  	sSQL = &quot;SELECT DISTINCT USER FROM mysql.user&quot;
+  	oResult = oStatement.executeQuery(sSql)
+  	&apos;Get the list
+  	oControl = oDialog.getControl(&quot;lstUser&quot;)
+  	&apos;Clean the list
+	oControl.removeItems(0, oControl.getItemCount())
+	&apos;Fill the list
+  	Do While oResult.next()
+    	If Not (oResult.GetString(1) = &quot;root&quot; Or oResult.GetString(1)=&quot;mariadb.sys&quot;) Then
+    		oControl.AddItem(oResult.getString (1),0)
+    	EndIf 
+  	Loop
+	&apos;get databases
+  	sSQL = &quot;SHOW DATABASES&quot;
+  	oResult = oStatement.executeQuery(sSql)
+  	&apos;Get the list
+  	oControl = oDialog.getControl(&quot;lstDatabase&quot;)
+  	&apos;Clean the list
+	oControl.removeItems(0, oControl.getItemCount())
+	&apos;Fill the list  	
+  	Do While oResult.next()
+    	If Not (oResult.GetString(1)=&quot;mysql&quot; Or oResult.GetString(1)=&quot;information_schema&quot; Or oResult.GetString(1)=&quot;performance_schema&quot;) Then
+    		oControl.AddItem(oResult.getString (1),0)
+    	EndIf 
+  	Loop
+  	Exit Sub
+  	ErrorHandler:
+    	&apos;if error, error msg
+  		MsgBox Error$, MB_OK +  MB_ICONSTOP, &quot;Error&quot;
+End Sub
+
+&apos;******************************************************
+&apos; FillPrivilegesStep2
+&apos;******************************************************
+Sub FillDelUsrStep2(oDialog, oCon)
+  	Dim oStatement As Object
+  	Dim sSQL As String
+ 	Dim oResult As Object
+  	Dim oControl As Object
+  	&apos;error catching
+  	On Local Error Goto ErrorHandler
+  	oStatement = oCon.CreateStatement() 	
+ 	&apos;fill users listbox
+  	sSQL = &quot;SELECT DISTINCT USER FROM mysql.user&quot;
+  	oResult = oStatement.executeQuery(sSql)
+  	oControl = oDialog.getControl(&quot;lstUser&quot;)
+	&apos;Clean the list, just in case
+	oControl.removeItems(0, oControl.getItemCount())  		
+  	Do While oResult.next()
+    	If Not (oResult.GetString(1) = &quot;root&quot; Or oResult.GetString(1)=&quot;mariadb.sys&quot;) Then
+    		oControl.AddItem(oResult.getString (1),0)
+    	EndIf 
+  	Loop
+  	Exit Sub
+  	ErrorHandler:
+    	&apos;if error, error msg
+  		MsgBox Error$, MB_OK +  MB_ICONSTOP, &quot;Error&quot;
+End Sub
+
+&apos;******************************************************
+&apos; DlgNewDatabaseOk
+&apos;******************************************************
+Function DlgNewDatabaseOk(oDialog As Object) As Boolean
+	Dim sDataBase as String
+  	Dim oCon As Object
+  	Dim bCorrect As Boolean
+  	bCorrect = false 
+  	&apos;Assigns dialog values to variables
+  	sDatabase=oDialog.GetControl(&quot;txtDatabase&quot;).Text()
+  	&apos;open a conexion with (mysql) database
+  	oCon = ConnectWithDialog(oDialog)
+  	&apos;Alwais close connetion
+  	if not isnull(ocon) Then
+  		&apos;Create new database
+  		bCorrect = NewDatabase(oCon, sDatabase)
+  		&apos;Alwais close connetion
+  		oCon.Close()
+  	End If
+  	DlgNewDatabaseOk = bCorrect
+End Function 
+
+&apos;******************************************************
+&apos; DlgNewUserOk
+&apos;******************************************************
+Function DlgNewUserOk(oDialog As Object) As Boolean 
+  	Dim sDatabase as String
+  	Dim sUser As String
+ 	Dim sPass As String
+	Dim iPrivileges As Integer
+  	Dim oCon As Object
+  	Dim bCorrect As Boolean 
+  	bCorrect = true
+	&apos;load data from dialog
+  	sUser=LCase(oDialog.GetControl(&quot;txtUser&quot;).Text) &apos;To avoid pseudo-duplicates, it alwais create lowercase user
+  	sPass=oDialog.GetControl(&quot;txtPass&quot;).Text
+  	sDatabase=LCase(oDialog.getControl(&quot;lstDatabase&quot;).SelectedItem()) 
+  	iPrivileges = oDialog.getControl(&quot;lstPrivileges&quot;).GetSelectedItemPos 
+
+  	&apos;open a conexion with (mysql) database
+  	oCon = ConnectWithDialog(oDialog)
+	bCorrect = Not IsNull(oCon) 
+  	&apos;Create new user
+  	bCorrect = NewUser(oCon, sUser, sPass, sDatabase) And bCorrect
+  	&apos;Assign privileges
+  	if bCorrect then AssignPrivileges(oCon, sUser, sDatabase, iPrivileges)
+  	&apos;Alwais close connetion
+  	if not isnull(ocon) then
+  		oCon.Close()
+  	End If
+  	DlgNewUserOk = bCorrect
+End Function
+
+&apos;******************************************************
+&apos; DlgNewPassOk
+&apos;******************************************************
+Function DlgNewPassOk(oDialog As Object) As Boolean 
+  	Dim sDatabase as String
+  	Dim sUser As String
+ 	Dim sPass As String
+	Dim iPrivileges As Integer
+  	Dim oCon As Object
+  	Dim bCorrect As Boolean 
+  	bCorrect = true
+	&apos;load data from dialog
+  	sUser=oDialog.GetControl(&quot;lstUser&quot;).getSelectedItem()
+  	sPass=oDialog.GetControl(&quot;txtPass&quot;).Text
+
+
+  	&apos;open a conexion with (mysql) database
+  	oCon = ConnectWithDialog(oDialog)
+	bCorrect = Not IsNull(oCon)
+
+  	&apos;Create new pass
+  	bCorrect = NewPass(oCon, sUser, sPass) And bCorrect
+  	&apos;Alwais close connetion
+  	if not isnull(ocon) then
+  		oCon.Close()
+  	End If
+  	DlgNewPassOk = bCorrect
+End Function
+
+&apos;******************************************************
+&apos; DlgChangePassOk
+&apos;******************************************************
+Function DlgChangePassOk(oDialog As Object) As Boolean 
+  	Dim oControler As Object
+  	Dim sUser As String
+ 	Dim sNewPass As String
+  	Dim oCon As Object
+  	Dim bCorrect As Boolean 
+  	bCorrect = false
+	&apos;load user
+  	sUser=thisComponent.dataSource.user
+  	sNewPass = oDialog.GetControl(&quot;txtNewPass&quot;).Text
+	&apos;get active connection
+  	oCon = thisComponent.CurrentController.ActiveConnection()
+	bCorrect = Not IsNull(oCon)
+  	&apos;Create new pass
+  	bCorrect = NewPass(oCon, sUser, sNewPass) And bCorrect
+  	DlgChangePassOk = bCorrect
+End Function
+
+&apos;******************************************************
+&apos; DlgPrivilegesOk
+&apos;******************************************************
+Function DlgPrivilegesOk(oDialog As Object) As Boolean
+  	Dim sDatabase as String
+  	Dim sUser As String
+  	Dim iPrivileges As integer
+  	Dim oCon As Object
+  	Dim bCorrect As Boolean
+  	Dim oControl As object
+  	bCorrect = false
+  	
+ 	sUser=LCase(oDialog.GetControl(&quot;lstUser&quot;).SelectedItem()) &apos;To avoid pseudo-duplicates, it alwais create lowercase user
+  	sDatabase=LCase(oDialog.GetControl(&quot;lstDatabase&quot;).SelectedItem()) &apos;To avoid pseudo-duplicates, it alwais create lowercase database
+  	
+  	&apos;Privileges list in listbox should be in the same position as privileges constants (at the begining)
+  	iPrivileges = oDialog.getControl(&quot;lstPrivileges&quot;).selectedItemPos
+
+  	&apos;open a conexion with (mysql) database
+  	oCon = ConnectWithDialog(oDialog)
+  	If Not IsNull(oCon) Then
+  		bCorrect = true
+    	&apos;Assign privileges
+    	bCorrect = AssignPrivileges(oCon, sUser, sDatabase, iPrivileges) And bCorrect
+   	&apos;Alwais close connetion
+  	oCon.Close()
+  	End If
+  	DlgPrivilegesOk = bCorrect
+End Function
+
+&apos;******************************************************
+&apos; DlgDelUsrOk
+&apos;******************************************************
+Function DlgDelUsrOk(oDialog As Object) As Boolean 
+  	Dim sDatabase as String
+  	Dim sUser As String
+ 	Dim sPass As String
+  	Dim oCon As Object
+  	Dim bCorrect As Boolean 
+  	bCorrect = true
+	&apos;load data from dialog
+
+  	sUser=(oDialog.getControl(&quot;lstUser&quot;).SelectedItem()) 
+  	
+  	&apos;open a conexion with (mysql) database
+  	oCon = ConnectWithDialog(oDialog)
+	bCorrect =Not IsNull(oCon) 
+  	&apos;Delete user
+  	bCorrect = DelUsr(oCon, sUser) And bCorrect
+
+  	&apos;Alwais close connetion
+  	if not isnull(ocon) then
+  		oCon.Close()
+  	End If
+  	DlgDelUsrOk = bCorrect
+End Function
+
+&apos;******************************************************
+&apos; ConnectWithDialog
+&apos;******************************************************
+Function ConnectWithDialog(oDialog As Object) As Object  &apos;return conecction
+  	&apos;oDialog had to have fields called txtAdminUser, txtAdminPass, txtServer and numPort
+  	Dim sAdminUser As String
+  	Dim sAdminPass As String
+ 	Dim sServer As String
+  	Dim sPort As String
+  	Dim sAdminDataBase As String &apos;If want to connect to an adminstrative database (different of mysql)
+  	Dim oCon As Object
+  	&apos;Assigns dialog values to variables
+  	sAdminUser=oDialog.GetControl(&quot;txtAdminUser&quot;).Text
+  	sAdminPass=oDialog.GetControl(&quot;txtAdminPass&quot;).Text
+  	sServer=oDialog.GetControl(&quot;txtServer&quot;).Text
+  	sPort=oDialog.GetControl(&quot;numPort&quot;).Text
+	ConnectWithDialog = ConnectMariaDB(sAdminUser, sAdminPass, sServer, sPort)
+End Function
+
+&apos;******************************************************
+&apos; ConnectMariaDB
+&apos;******************************************************
+Function ConnectMariaDB(user as String, password As String, Optional server As String, Optional port As String, Optional database as String) as Object
+  	&apos;Default values
+  	If IsMissing(dataBase) then dataBase = &quot;mysql&quot;
+  	If IsMissing(server) then server = &quot;localhost&quot;
+  	If IsMissing(port) then port = &quot;3306&quot;
+  	&apos;Declaration of variables
+  	Dim oParams() as new com.sun.star.beans.PropertyValue
+  	Dim sUrl as String
+  	Dim oManager as Object
+  	&apos;Prepare URL
+  	sUrl = &quot;sdbc:mysqlc:&quot; &amp; server &amp; &quot;:&quot; &amp; port &amp; &quot;/&quot; &amp; dataBase
+  	&apos;Prepare params
+  	AppendProperty(oParams(), &quot;user&quot;, user)
+  	AppendProperty(oParams(), &quot;password&quot;, password)
+  	On Local Error Goto ErrorHandler
+  	oManager = CreateUnoService(&quot;com.sun.star.sdbc.DriverManager&quot;)
+  	&apos;Connect to MariaDB/MySQL and return object
+  	ConnectMariaDB = oManager.getConnectionWithInfo(sURL, oParams())
+  	Exit Function
+  
+  	ErrorHandler: 
+  		MsgBox Error$, MB_OK + MB_ICONSTOP, &quot;Error&quot;  
+End Function
+
+&apos;******************************************************
+&apos; NewDatabase
+&apos;******************************************************
+Function NewDatabase(oCon As Object, database As String) As Boolean 
+  	Dim oStatement As Object
+  	Dim sSQL As String
+  	Dim oHasDatabase As Object
+  	Dim bCorrect As Boolean 
+  	bCorrect = False 
+  	On Local Error Goto ErrorHandler
+  	oStatement = oCon.CreateStatement()  
+  	sSQL = &quot;SHOW DATABASES LIKE &apos;&quot; &amp; database &amp; &quot;&apos;&quot;
+  	oHasDatabase = oStatement.executeQuery(sSQL)
+  	If (oHasDatabase.last() And (oHasDatabase.getRow &gt; 0)) Then
+
+    	MsgBox (InitLoc().GetText(&quot;The database &apos;%1&apos; already exists&quot;, database), MB_OK +  MB_ICONEXCLAMATION, InitLoc().GetText(&quot;Warning&quot;))
+  	else
+    	&apos;prepare sql sentence with user quoted
+    	sSQL = &quot;CREATE DATABASE &quot; &amp; DBQuoteName(database, oCon)
+    	oStatement.execute(sSQL)
+    	&apos;If no error (if error catched by goto)
+    	MsgBox(InitLoc().GetText(&quot;The database &apos;%1&apos; has been successfully created&quot;, database), MB_OK +  MB_ICONINFORMATION, InitLoc().GetText(&quot;New database&quot;))
+    	bCorrect = true 
+  	End If
+  	NewDatabase = bCorrect
+  	Exit Function
+  	
+  	ErrorHandler:
+    	&apos;if error, error msg
+  		MsgBox Error$, MB_OK +  MB_ICONSTOP, &quot;Error&quot;
+End Function 
+
+&apos;******************************************************
+&apos; NewUser
+&apos;******************************************************
+Function NewUser(oCon As Object, user As String, password As String, database As String) As Boolean 
+  	Dim oStatement As Object
+  	Dim sSQL As String
+  	Dim oHasUser As Object
+  	Dim bHasUser as Boolean
+  	Dim oCorrect As Boolean 
+  	oCorrect = false
+  	&apos;error catching
+  	On Local Error Goto ErrorHandler
+  	oStatement = oCon.CreateStatement()
+  	&apos;Check if user exists
+  	sSQL = &quot;SELECT USER FROM mysql.db WHERE user=&apos;&quot; &amp; user &amp; &quot;&apos; AND db=&apos;&quot; &amp; database &amp; &quot;&apos;&quot;
+  	oHasUser = oStatement.executeQuery(sSQL)
+  	bHasUser = oHasUser.last() and (oHasUser.getRow &gt; 0)
+  	If bHasUser Then
+    	MsgBox (InitLoc().GetText(&quot;The user &apos;%1&apos; already exists&quot;, user), MB_OK +  MB_ICONEXCLAMATION, InitLoc().GetText(&quot;Warning&quot;))
+  	Else
+    	sSQL = &quot;CREATE USER &apos;&quot; &amp; user &amp; &quot;&apos; IDENTIFIED BY &apos;&quot; &amp; password &amp; &quot;&apos;&quot;
+    	oStatement.execute(sSQL)
+    	MsgBox(InitLoc().GetText(&quot;The user &apos;%1&apos; has been successfully created&quot;, user), MB_OK +  MB_ICONINFORMATION, InitLoc().GetText(&quot;New user&quot;))
+    	oCorrect = true
+  	End If
+  	NewUser = oCorrect
+  	Exit Function
+  	ErrorHandler:
+    	&apos;if error, error msg
+  		MsgBox Error$, MB_OK +  MB_ICONSTOP, &quot;Error&quot;
+End Function
+
+&apos;******************************************************
+&apos; NewPass
+&apos;******************************************************
+Function NewPass(oCon As Object, user As String, password As String) As Boolean 
+  	Dim oStatement As Object
+  	Dim sSQL As String
+  	Dim oCorrect As Boolean 
+  	oCorrect = false
+  	&apos;error catching
+  	On Local Error Goto ErrorHandler
+  	oStatement = oCon.CreateStatement()
+   	sSQL = &quot;SET PASSWORD FOR &apos;&quot; &amp; user &amp; &quot;&apos; = PASSWORD(&apos;&quot; &amp; password &amp; &quot;&apos;)&quot;
+    oStatement.execute(sSQL)
+    MsgBox(InitLoc().GetText(&quot;The password for user &apos;%1&apos; has been changed&quot;, user), MB_OK +  MB_ICONINFORMATION, InitLoc().GetText(&quot;Change password&quot;))
+    oCorrect = true
+ 	NewPass = oCorrect
+  	Exit Function
+  	ErrorHandler:
+    	&apos;if error, error msg
+  		MsgBox Error$, MB_OK +  MB_ICONSTOP, &quot;Error&quot;
+  		NewPass = oCorrect
+End Function
+
+&apos;******************************************************
+&apos; DelUsr
+&apos;******************************************************
+Function DelUsr(oCon As Object, user As String) As Boolean 
+  	Dim oStatement As Object
+  	Dim sSQL As String
+  	Dim bCorrect As Boolean 
+  	&apos;error catching
+  	On Local Error Goto ErrorHandler
+    if MsgBox (InitLoc().GetText(&quot;Are you sure you want to delete the user &apos;%1&apos;?&quot;, user),MB_YESNO +  MB_ICONQUESTION, InitLoc().GetText(&quot;Delete user&quot;)) = IDYES Then 
+    	oStatement = oCon.CreateStatement()
+	  	sSQL = &quot;DROP USER &apos;&quot; &amp; user &amp; &quot;&apos;&quot;
+		oStatement.execute(sSQL)
+		MsgBox (InitLoc().GetText(&quot;User &apos;%1&apos; has been removed&quot;, user) ,MB_OK +  MB_ICONINFORMATION, InitLoc().GetText(&quot;Delete user&quot;))
+		bCorrect = true
+    Else
+    	bCorrect = false
+    EndIf 
+    DelUsr = bCorrect
+  	Exit Function
+  	ErrorHandler:
+    	&apos;if error, error msg
+  		MsgBox Error$, MB_OK +  MB_ICONSTOP, &quot;Error&quot;
+  		DelUsr = false
+End Function
+
+&apos;******************************************************
+&apos; AssignPrivileges
+&apos;******************************************************
+Function AssignPrivileges(conection As Object, user As string , database As String, privileges As Integer) As boolean
+  	Dim sSQL As String
+  	Dim oStatement As Object
+  	Dim oResult As Object
+  	Dim bRes as boolean
+  	&apos;Dim iRes as Integer
+
+  	Select Case privileges
+		Case PRIVILEGES_ADMIN
+			sSQL = &quot;GRANT ALL PRIVILEGES ON *.* TO &apos;&quot; &amp; user &amp; &quot;&apos; WITH GRANT OPTION&quot;
+    	Case PRIVILEGES_ADVANCED
+  	  		sSQL = &quot;GRANT ALL PRIVILEGES ON &quot; &amp; database &amp; &quot;.* TO &apos;&quot; &amp; user &amp; &quot;&apos; WITH GRANT OPTION&quot;
+		Case PRIVILEGES_WRITE   
+  	  		sSQL = &quot;GRANT SELECT, INSERT, UPDATE, DELETE ON &quot; &amp; database &amp; &quot;.* TO &apos;&quot; &amp; user &amp; &quot;&apos;&quot;
+    	Case PRIVILEGES_READ
+  	 		sSQL = &quot;GRANT SELECT ON &quot; &amp; database &amp; &quot;.* TO &apos;&quot; &amp; user &amp; &quot;&apos;&quot;
+    	Case PRIVILEGES_NONE
+  	  		sSQL = &quot;SHOW GRANTS FOR &apos;&quot; &amp; user &amp; &quot;&apos;&quot; &apos;This do nothig (no empty sentences allowed), privileges are revoked in the if sentence											&apos;it&apos;s not allowed empty sentences
+  		Case Else 
+  	  		MsgBox(InitLoc().GetText(&quot;Permissions have not been changed&quot;) ) 
+  	  		sSQL = &quot;&quot; &apos;No privileges modification
+  	End Select
+  
+  	On Local Error Goto ErrorHandler
+  	oStatement = conection.CreateStatement()
+  	
+  	&apos;Before revoke privileges need to test if have some
+  	If privileges = PRIVILEGES_NONE Then
+	   	&apos;Search for privileges
+	   	oresult = oStatement.ExecuteQuery(&quot;SELECT USER FROM mysql.db WHERE user= &apos;&quot; &amp; user  &amp; &quot;&apos; AND db= &apos;&quot; &amp; database &amp; &quot;&apos;&quot;)
+	   	&apos;if privileges assigned
+	   	If (oresult.last() and oresult.getrow() &gt; 0) Then &apos;User has some privileges in database
+   			oStatement.execute(&quot;REVOKE ALL PRIVILEGES ON &quot; &amp; database &amp; &quot;.* FROM &apos;&quot; &amp; user &amp; &quot;&apos;&quot; )
+		End if 
+  	End If
+  	
+  	&apos;assign new privileges
+	oStatement.execute(sSQL)
+  	
+  	MsgBox (InitLoc().GetText(&quot;User &apos;%1&apos; permissions have been updated&quot;, user), MB_OK +  MB_ICONINFORMATION, InitLoc().GetText(&quot;Permissions&quot;))
+	AssignPrivileges = true
+  	Exit Function
+  
+  	ErrorHandler:
+    	&apos;if error, error msg
+  		MsgBox Error$, MB_OK +  MB_ICONSTOP, &quot;Error&quot;
+  		AssignPrivileges = false
+End Function
+
+&apos;******************************************************
+&apos; LoadDlg
+&apos;******************************************************
+Function LoadDlg(dlgName As String, Optional libName As String) As Object
+ 	If IsMissing(libName) Then libName = &quot;EasyMariaDB&quot;
+  	With BasicLibraries
+    	If Not .IsLibraryLoaded(&quot;Tools&quot;) Then .LoadLibrary(&quot;Tools&quot;)
+  	End With
+  	LoadDlg = LoadDialog(libName, dlgName) 
+End Function 
+
+&apos;******************************************************
+&apos; DBQuoteName
+&apos;******************************************************
+Function DBQuoteName(sName As String, oCon) As String
+  Dim sQuote As String
+  sQuote = oCon.getMetaData().getIdentifierQuoteString()
+  DBQuoteName = sQuote &amp; sName &amp; sQuote
+End Function
+
+&apos;******************************************************
+&apos; AppendProperty
+&apos;******************************************************
+Sub AppendProperty(oProperties(), sName As String, ByVal oValue)
+  AppendToArray(oProperties(), CreateProperty(sName, oValue))
+End Sub
+
+&apos;******************************************************
+&apos; AppendToArray
+&apos;******************************************************
+Sub AppendToArray(oData(), ByVal x)
+ Dim iUB As Integer &apos;The upper bound of the array.
+ Dim iLB As Integer &apos;The lower bound of the array.
+ iUB = UBound(oData()) + 1
+ iLB = LBound(oData())
+ ReDim Preserve oData(iLB To iUB)
+ oData(iUB) = x
+End Sub
+
+&apos;******************************************************
+&apos; CreateProperty
+&apos;******************************************************
+Function CreateProperty(sName$, oValue) As com.sun.star.beans.PropertyValue
+ Dim oProperty As New com.sun.star.beans.PropertyValue
+ oProperty.Name = sName
+ oProperty.Value = oValue
+ CreateProperty() = oProperty
+End Function
+
+&apos;******************************************************
+&apos; CreatePOT - Used only once before distributing extension to create pot files
+&apos;******************************************************
+Sub CreatePOT
+	GlobalScope.BasicLibraries.loadLibrary(&quot;ScriptForge&quot;)
+	Dim myPO As Variant
+	Set myPO = CreateScriptService(&quot;L10N&quot;)
+	myPO.AddText(,&quot;User: &quot;)
+	myPO.AddText(,&quot;You must fill in all the data&quot;)
+	myPO.AddText(,&quot;Passwords do not match&quot;)
+	myPO.AddText(,&quot;Current password is not right&quot;)
+	myPO.AddText(,&quot;The database &apos;%1&apos; already exists&quot;)
+	myPO.AddText(,&quot;The database &apos;%1&apos; has been successfully created&quot;)
+	myPO.AddText(,&quot;Warning&quot;)
+	myPO.AddText(,&quot;The user &apos;%1&apos; already exists&quot;)
+	myPO.AddText(,&quot;The password for user &apos;%1&apos; has been changed&quot;)
+	myPO.AddText(,&quot;Are you sure you want to delete the user &apos;%1&apos;?&quot;)
+	myPO.AddText(,&quot;Delete user&quot;)
+	myPO.AddText(,&quot;User &apos;%1&apos; has been removed&quot;)
+	myPO.AddText(,&quot;Permissions have not been changed&quot;)
+	myPO.AddText(,&quot;User &apos;%1&apos; permissions have been updated&quot;)
+	myPO.AddText(,&quot;Permissions&quot;)
+	myPO.AddText(,&quot;Hello&quot;)
+	
+	Dim oDlg As Object 	
+	oDlg = CreateScriptService(&quot;Dialog&quot;, &quot;GlobalScope&quot;, &quot;EasyMariaDB&quot;, &quot;DlgChangePass&quot;)
+	myPO.AddTextsFromDialog(oDlg)
+	
+	oDlg = CreateScriptService(&quot;Dialog&quot;, &quot;GlobalScope&quot;, &quot;EasyMariaDB&quot;, &quot;DlgDelUser&quot;)
+	myPO.AddTextsFromDialog(oDlg)
+	
+	oDlg = CreateScriptService(&quot;Dialog&quot;, &quot;GlobalScope&quot;, &quot;EasyMariaDB&quot;, &quot;DlgNewDatabase&quot;)
+	myPO.AddTextsFromDialog(oDlg)
+	
+	oDlg = CreateScriptService(&quot;Dialog&quot;, &quot;GlobalScope&quot;, &quot;EasyMariaDB&quot;, &quot;DlgNewPass&quot;)
+	myPO.AddTextsFromDialog(oDlg)
+
+	oDlg = CreateScriptService(&quot;Dialog&quot;, &quot;GlobalScope&quot;, &quot;EasyMariaDB&quot;, &quot;DlgNewUser&quot;)
+	myPO.AddTextsFromDialog(oDlg)
+	
+	oDlg = CreateScriptService(&quot;Dialog&quot;, &quot;GlobalScope&quot;, &quot;EasyMariaDB&quot;, &quot;DlgPrivileges&quot;)
+	myPO.AddTextsFromDialog(oDlg)	
+	
+	&apos;Give a proper folder where write pot files
+	&apos;The pot files should be moved to the estension&apos;s \lang folder
+	myPO.ExportToPOTFile(&quot;c:\kk\myFile.pot&quot;) 
+
+End Sub
+
+</script:module>

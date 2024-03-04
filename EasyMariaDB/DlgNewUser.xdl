@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgNewUser" dlg:tab-index="0" dlg:left="250" dlg:top="50" dlg:width="251" dlg:height="131" dlg:page="1" dlg:closeable="true" dlg:moveable="true" dlg:title="New user">
+ <dlg:styles>
+  <dlg:style dlg:style-id="0" dlg:border="simple"/>
+ </dlg:styles>
+ <dlg:bulletinboard>
+  <dlg:button dlg:id="btnPrevious" dlg:tab-index="8" dlg:disabled="true" dlg:left="52" dlg:top="110" dlg:width="45" dlg:height="12" dlg:value="&lt; Back">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:EasyMariaDB.EasyMariaDB.UsrPrevious_actionPerformed?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:button dlg:id="btnNext" dlg:tab-index="9" dlg:left="100" dlg:top="110" dlg:width="45" dlg:height="12" dlg:value="Next &gt;">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:EasyMariaDB.EasyMariaDB.UsrNext_actionPerformed?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:button dlg:id="btnOk" dlg:tab-index="10" dlg:disabled="true" dlg:left="148" dlg:top="110" dlg:width="45" dlg:height="12" dlg:value="OK">
+   <script:event script:event-name="on-performaction" script:macro-name="vnd.sun.star.script:EasyMariaDB.EasyMariaDB.UsrOk_actionPerformed?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:button>
+  <dlg:button dlg:id="btnCancel" dlg:tab-index="11" dlg:left="196" dlg:top="110" dlg:width="45" dlg:height="12" dlg:value="Cancel" dlg:button-type="cancel"/>
+  <dlg:text dlg:id="Label2" dlg:tab-index="13" dlg:left="17" dlg:top="43" dlg:width="95" dlg:height="12" dlg:page="2" dlg:value="Password" dlg:align="right" dlg:valign="center"/>
+  <dlg:textfield dlg:style-id="0" dlg:id="txtServer" dlg:tab-index="0" dlg:left="119" dlg:top="25" dlg:width="115" dlg:height="12" dlg:page="1" dlg:help-text="Name or IP address of the server " dlg:valign="center" dlg:value="localhost"/>
+  <dlg:numericfield dlg:style-id="0" dlg:id="numPort" dlg:tab-index="1" dlg:left="119" dlg:top="43" dlg:width="45" dlg:height="12" dlg:page="1" dlg:help-text="Database server connection port" dlg:align="center" dlg:valign="center" dlg:decimal-accuracy="0" dlg:value="3306" dlg:spin="true"/>
+  <dlg:textfield dlg:style-id="0" dlg:id="txtAdminUser" dlg:tab-index="2" dlg:left="119" dlg:top="61" dlg:width="115" dlg:height="12" dlg:page="1" dlg:help-text="Administrator user or user with permissions to create new users" dlg:value="root"/>
+  <dlg:textfield dlg:style-id="0" dlg:id="txtAdminPass" dlg:tab-index="3" dlg:left="119" dlg:top="79" dlg:width="115" dlg:height="12" dlg:page="1" dlg:help-text="Administrator password" dlg:echochar="*"/>
+  <dlg:textfield dlg:style-id="0" dlg:id="txtUser" dlg:tab-index="4" dlg:left="115" dlg:top="25" dlg:width="115" dlg:height="12" dlg:page="2" dlg:help-text="Type the name of the new user"/>
+  <dlg:textfield dlg:style-id="0" dlg:id="txtPass" dlg:tab-index="5" dlg:left="115" dlg:top="43" dlg:width="115" dlg:height="12" dlg:page="2" dlg:help-text="New user password" dlg:echochar="*"/>
+  <dlg:menulist dlg:style-id="0" dlg:id="lstDatabase" dlg:tab-index="6" dlg:left="115" dlg:top="61" dlg:width="115" dlg:height="12" dlg:page="2" dlg:help-text="Database to which the new user will connect to" dlg:spin="true"/>
+  <dlg:menulist dlg:style-id="0" dlg:id="lstPrivileges" dlg:tab-index="7" dlg:left="115" dlg:top="79" dlg:width="115" dlg:height="12" dlg:page="2" dlg:help-text="Permissions granted to the user" dlg:spin="true">
+   <dlg:menupopup>
+    <dlg:menuitem dlg:value="None (remove permissions)"/>
+    <dlg:menuitem dlg:value="Read only"/>
+    <dlg:menuitem dlg:value="Reading and writing"/>
+    <dlg:menuitem dlg:value="Advanced"/>
+    <dlg:menuitem dlg:value="Administrator"/>
+   </dlg:menupopup>
+  </dlg:menulist>
+  <dlg:text dlg:id="lblServer" dlg:tab-index="15" dlg:left="14" dlg:top="25" dlg:width="102" dlg:height="12" dlg:page="1" dlg:value="Server" dlg:align="right" dlg:valign="center"/>
+  <dlg:text dlg:id="lblPort" dlg:tab-index="16" dlg:left="14" dlg:top="43" dlg:width="102" dlg:height="12" dlg:page="1" dlg:value="Port" dlg:align="right" dlg:valign="center"/>
+  <dlg:text dlg:id="lblPass" dlg:tab-index="18" dlg:left="14" dlg:top="79" dlg:width="102" dlg:height="12" dlg:page="1" dlg:value="Password" dlg:align="right" dlg:valign="center"/>
+  <dlg:text dlg:id="lblAdminUser" dlg:tab-index="17" dlg:left="14" dlg:top="61" dlg:width="102" dlg:height="12" dlg:page="1" dlg:value="Admin user name" dlg:align="right" dlg:valign="center"/>
+  <dlg:titledbox dlg:id="frmConnection" dlg:tab-index="19" dlg:left="10" dlg:top="10" dlg:width="232" dlg:height="90" dlg:page="1">
+   <dlg:title dlg:value="Connection data"/>
+  </dlg:titledbox>
+  <dlg:titledbox dlg:id="frmNewUser" dlg:tab-index="20" dlg:left="10" dlg:top="10" dlg:width="228" dlg:height="90" dlg:page="2">
+   <dlg:title dlg:value="New user data"/>
+  </dlg:titledbox>
+  <dlg:text dlg:id="lblPermissions" dlg:tab-index="21" dlg:left="17" dlg:top="79" dlg:width="95" dlg:height="12" dlg:page="2" dlg:value="Permissions" dlg:align="right" dlg:valign="center"/>
+  <dlg:text dlg:id="lblDatabase" dlg:tab-index="14" dlg:left="17" dlg:top="61" dlg:width="95" dlg:height="12" dlg:page="2" dlg:value="Database" dlg:align="right" dlg:valign="center"/>
+  <dlg:text dlg:id="lblUser" dlg:tab-index="12" dlg:left="17" dlg:top="25" dlg:width="95" dlg:height="12" dlg:page="2" dlg:value="User name" dlg:align="right" dlg:valign="center"/>
+ </dlg:bulletinboard>
+</dlg:window>

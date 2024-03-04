@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest:manifest>
+   <manifest:file-entry manifest:full-path="EasyMariaDB/" manifest:media-type="application/vnd.sun.star.basic-library"/>
+   <manifest:file-entry manifest:full-path="pkg-desc/pkg-description.es" manifest:media-type="application/vnd.sun.star.package-bundle-description;locale=es"/>
+   <manifest:file-entry manifest:full-path="Addons.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+   <manifest:file-entry manifest:full-path="WriterWindowState.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+   <manifest:file-entry manifest:full-path="BaseWindowState.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+   <manifest:file-entry manifest:full-path="CalcWindowState.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+   <manifest:file-entry manifest:full-path="DrawWindowState.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+   <manifest:file-entry manifest:full-path="ImpressWindowState.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+   <manifest:file-entry manifest:full-path="MathWindowState.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+</manifest:manifest>
